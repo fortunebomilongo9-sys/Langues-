@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3.12-alpine
 # The date keys the build cache so this layer installs today's OS fixes; AppJet keeps it current on deploy.
 RUN echo "os-refresh 2026-11-26" && apk upgrade --no-cache
 WORKDIR /app
