@@ -53,6 +53,11 @@ class PageFetcher:
         self._timeout = timeout
         self._cache: dict[str, tuple[int, bytes, str]] = {}
 
+    @property
+    def client(self) -> httpx.AsyncClient:
+        """Client HTTP partagé, utilisé par les sources pour leurs appels parallèles."""
+        return self._client
+
     async def fetch(self, url: str) -> tuple[bytes | None, str | None, str | None]:
         """Renvoie (contenu, type, erreur)."""
         if not url:

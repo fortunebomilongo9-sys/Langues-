@@ -1395,7 +1395,8 @@ function initHeader() {
     nav.hidden = !open;
     $("[data-menu-toggle]").setAttribute("aria-expanded", String(open));
   });
-  $("[data-year]")?.textContent = String(new Date().getFullYear());
+  const yearEl = $("[data-year]");
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   document.addEventListener("change", (event) => {
     const input = event.target.closest("[data-image-input]");
