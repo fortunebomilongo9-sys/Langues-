@@ -24,6 +24,7 @@ const SELLER_LABELS = {
 
 const AVAILABILITY_LABELS = {
   disponible: "Disponible",
+  "non confirmee": "Disponibilité non confirmée",
   non_confirme: "Disponibilité non confirmée",
   indisponible: "Indisponible",
   inconnu: "Disponibilité non confirmée",
