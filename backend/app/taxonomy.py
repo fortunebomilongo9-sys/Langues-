@@ -426,6 +426,7 @@ SITE_CONFIGS: list[dict] = [
         "image_selector": "img.img, img",
         "link_selector": "a.core, a",
         "seller_selector": ".badge, .seller",
+        "currency": "CDF",
         "trust": 0.75,
     },
     {
@@ -439,6 +440,7 @@ SITE_CONFIGS: list[dict] = [
         "image_selector": "img.img, img",
         "link_selector": "a.core, a",
         "seller_selector": ".badge, .seller",
+        "currency": "KES",
         "trust": 0.7,
     },
 ]

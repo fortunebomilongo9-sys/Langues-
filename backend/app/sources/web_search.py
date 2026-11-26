@@ -182,10 +182,12 @@ async def _run_engine(
     results = engine.parse(soup, url)
     if not results and response.status_code in {200, 202}:
         return [], f"{engine.label} : page sans résultat exploitable (protection anti-robot probable)"
-    for result in results:
-        if any(host in urlparse(result.url).netloc for host in _BLOCKED_HOSTS):
-            continue
-    return results[:per_engine], None
+    filtered = [
+        result
+        for result in results
+        if not any(host in urlparse(result.url).netloc for host in _BLOCKED_HOSTS)
+    ]
+    return filtered[:per_engine], None
 
 
 async def search_web(
