@@ -42,6 +42,31 @@ STAGE_LABELS = {
     "elargi": "Recherche élargie",
 }
 
+_CONNECTIVITY_HINTS = (
+    "délai",
+    "delai",
+    "timeout",
+    "timed out",
+    "connect",
+    "dns",
+    "name resolution",
+    "network",
+    "réseau",
+    "reseau",
+    "unreachable",
+    "ssl",
+)
+
+
+def _is_connectivity_failure(detail: str) -> bool:
+    """Distingue une vraie panne de connexion d'un refus d'accès d'une source.
+
+    Un HTTP 403 ou une page anti-robot ne signifie pas que l'utilisateur est
+    hors ligne : seul un échec réseau réel doit déclencher ce message.
+    """
+    text = (detail or "").lower()
+    return any(hint in text for hint in _CONNECTIVITY_HINTS)
+
 
 def _stage_queries(intent: SearchIntent) -> list[tuple[str, str]]:
     """Construit les étapes de recherche progressive (requête par étape)."""

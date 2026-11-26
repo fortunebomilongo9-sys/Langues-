@@ -701,7 +701,7 @@ async function runSearch(params) {
 
   if (!navigator.onLine) {
     results.innerHTML = `<div class="empty-state"><span class="emoji">📡</span>
-      <p><strong>Connectez-vous à Internet pour effectuer vos recherches.</strong></p>
+      <p><strong>${OFFLINE_MESSAGE}</strong></p>
       <p class="muted small">JF MARKET interroge des sources commerciales en direct : sans connexion, aucun résultat ne peut être vérifié.</p></div>`;
     return;
   }
@@ -723,9 +723,12 @@ async function runSearch(params) {
     if (panel) panel.innerHTML = intentPanel(response);
 
     if (!response.network_ok) {
+      const hint = response.message && response.message !== OFFLINE_MESSAGE
+        ? response.message
+        : "Les sources commerciales sont momentanément inaccessibles.";
       results.innerHTML = `<div class="empty-state"><span class="emoji">📡</span>
-        <p><strong>Connectez-vous à Internet pour effectuer vos recherches.</strong></p>
-        <p class="muted small">${esc(response.message || "Les sources commerciales sont momentanément inaccessibles.")}</p></div>`;
+        <p><strong>${OFFLINE_MESSAGE}</strong></p>
+        <p class="muted small">${esc(hint)}</p></div>`;
       return;
     }
 
