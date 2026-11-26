@@ -694,6 +694,8 @@ function intentPanel(response) {
     </div>`;
 }
 
+const OFFLINE_MESSAGE = "Connectez-vous à Internet pour effectuer vos recherches.";
+
 async function runSearch(params) {
   const results = $("[data-results]");
   const panel = $("[data-intent-panel]");
