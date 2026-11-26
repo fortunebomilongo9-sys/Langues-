@@ -49,7 +49,7 @@ async def create_listing(
         id=new_id("l_"),
         seller_uid=context.user.uid,
         seller_name=context.user.display_name,
-        seller_type="particulier",
+        seller_type="particulier" if context.user.role != "vendeur" else context.user.seller_type,
         title=payload.title.strip(),
         description=payload.description.strip(),
         price=payload.price,

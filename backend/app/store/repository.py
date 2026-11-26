@@ -43,6 +43,7 @@ class Repository:
             email=data.get("email", ""),
             role=data.get("role", "acheteur"),
             display_name=data.get("display_name") or data.get("email", "").split("@")[0],
+            seller_type=data.get("seller_type") or "particulier",
             created_at=data.get("created_at", utcnow()),
         )
 

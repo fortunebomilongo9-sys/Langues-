@@ -168,6 +168,7 @@ class AuthService:
                     "role": request.role,
                     "display_name": request.display_name,
                     "phone": request.phone,
+                    "seller_type": request.seller_type,
                 },
             )
             return id_token, await self.repository.to_auth_user(profile), "firebase"
@@ -183,6 +184,7 @@ class AuthService:
             "role": request.role,
             "display_name": request.display_name,
             "phone": request.phone,
+            "seller_type": request.seller_type,
             "provider": "local",
             "password_hash": password_hash,
             "salt": salt,
