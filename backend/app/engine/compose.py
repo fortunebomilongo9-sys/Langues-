@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from ..images.selector import attach_images
 from ..models import ContactInfo, Listing, Offer, SearchIntent
 from ..sources.base import RawOffer
+from ..sources.html_utils import parse_price_text
 from ..taxonomy import COMMUNE_ALIASES, COMMUNES, CONDITION_LABELS, NOT_PROVIDED
 from .normalize import fold, truncate
 
@@ -109,15 +110,23 @@ def compose_offer(raw: RawOffer, intent: SearchIntent) -> Offer:
     city = detect_city(raw.location_text) or ("Kinshasa" if commune else None)
     primary_image, images = attach_images(raw, intent)
     condition = normalize_condition(raw.condition_text)
+    price, currency = raw.price, raw.currency
+    if price is None:
+        # Prix explicitement publié dans l'annonce : on le lit, on ne l'invente jamais.
+        for text in (raw.price_text, raw.description):
+            amount, detected, _ = parse_price_text(text)
+            if amount is not None:
+                price, currency = amount, currency or detected
+                break
     return Offer(
         id=_offer_id(raw.url, raw.title),
         title=truncate(raw.title, 160) or NOT_PROVIDED,
         description=truncate(raw.description, 600) if raw.description else None,
         brand=raw.brand,
         product_model=raw.product_model,
-        price=raw.price,
-        currency=raw.currency,
-        price_display=format_price(raw.price, raw.currency),
+        price=price,
+        currency=currency,
+        price_display=format_price(price, currency),
         condition=condition,  # type: ignore[arg-type]
         availability=(raw.availability_text or "inconnu"),  # type: ignore[arg-type]
         seller_name=raw.seller_name,
