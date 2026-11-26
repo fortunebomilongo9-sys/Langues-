@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JF MARKET — Recherchez un article, retrouvez les offres</title>
+  <meta name="description" content="JF MARKET : moteur de recherche commercial intelligent pour Kinshasa. Analysez votre demande, comparez les offres réelles et découvrez les vendeurs." />
+  <meta name="theme-color" content="#0b1f3a" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#view">Aller au contenu</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" data-link aria-label="Accueil JF MARKET">
+        <span class="brand-mark" aria-hidden="true">JF</span>
+        <span class="brand-text">
+          <strong>JF MARKET</strong>
+          <small>Kinshasa · RDC</small>
+        </span>
+      </a>
+
+      <form class="header-search" role="search" data-header-search>
+        <label class="sr-only" for="q-header">Rechercher un article</label>
+        <input id="q-header" name="q" type="search" placeholder="Téléphone, ordinateur, voiture…" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+      </form>
+
+      <nav class="header-nav" aria-label="Navigation principale">
+        <a href="/#categories" data-link>Catégories</a>
+        <a href="/#marques" data-link>Marques</a>
+        <a href="/favoris" data-link data-favorites-link>Favoris</a>
+        <a href="/vendeur" data-link>Vendre</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Basculer le mode jour / nuit" title="Mode jour / nuit">
+          <span data-theme-icon>🌙</span>
+        </button>
+        <button class="btn btn-ghost" type="button" data-account-button>Se connecter</button>
+        <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+
+    <div class="mobile-nav" data-mobile-nav hidden>
+      <a href="/" data-link>Accueil</a>
+      <a href="/favoris" data-link>Mes favoris</a>
+      <a href="/compte" data-link>Mon compte</a>
+      <a href="/vendeur" data-link>Espace vendeur</a>
+      <a href="/a-propos" data-link>À propos</a>
+    </div>
+  </header>
+
+  <div class="offline-banner" data-offline hidden>
+    Connectez-vous à Internet pour effectuer vos recherches.
+  </div>
+
+  <main id="view" class="view" tabindex="-1">
+    <div class="loading-block">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Chargement de JF MARKET…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <p class="footer-brand">JF MARKET</p>
+        <p class="muted">
+          Moteur de recherche commercial pour Kinshasa. Les offres proviennent de sources
+          publiques identifiées ; aucune information vendeur n'est inventée.
+        </p>
+      </div>
+      <nav aria-label="Liens du pied de page">
+        <a href="/a-propos" data-link>À propos &amp; sources</a>
+        <a href="/vendeur" data-link>Publier un article</a>
+        <a href="/favoris" data-link>Mes favoris</a>
+        <a href="/api/health" target="_blank" rel="noopener">État du service</a>
+      </nav>
+      <p class="muted small">© <span data-year></span> JF MARKET — Kinshasa, République démocratique du Congo.</p>
+    </div>
+  </footer>
+
+  <div class="toast-stack" data-toasts aria-live="polite" aria-atomic="false"></div>
+
+  <div class="modal" data-auth-modal hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <button class="icon-btn modal-close" type="button" data-close-modal aria-label="Fermer">✕</button>
+      <h2 id="auth-title" data-auth-title>Se connecter</h2>
+      <p class="muted small" data-auth-hint>
+        Un compte permet d'enregistrer vos favoris, votre historique et vos annonces.
+      </p>
+
+      <div class="tabs" role="tablist" data-auth-tabs>
+        <button role="tab" type="button" class="tab active" data-auth-mode="signin" aria-selected="true">Connexion</button>
+        <button role="tab" type="button" class="tab" data-auth-mode="signup" aria-selected="false">Créer un compte</button>
+      </div>
+
+      <form data-auth-form class="stack" novalidate>
+        <label class="field">
+          <span>Adresse e-mail</span>
+          <input name="email" type="email" autocomplete="email" required placeholder="vous@exemple.cd" />
+        </label>
+        <label class="field">
+          <span>Mot de passe</span>
+          <input name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="6 caractères minimum" />
+        </label>
+        <div class="signup-only" hidden>
+          <label class="field">
+            <span>Nom affiché</span>
+            <input name="display_name" type="text" autocomplete="name" placeholder="Ex. Jean K." />
+          </label>
+          <label class="field">
+            <span>Profil</span>
+            <select name="role">
+              <option value="acheteur">Acheteur — je recherche des articles</option>
+              <option value="vendeur">Vendeur — je publie des articles</option>
+            </select>
+          </label>
+        </div>
+        <p class="form-error" data-auth-error hidden></p>
+        <button class="btn btn-primary btn-block" type="submit" data-auth-submit>Se connecter</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>
