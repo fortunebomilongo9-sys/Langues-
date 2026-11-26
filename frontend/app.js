@@ -261,6 +261,7 @@ function initAuth() {
     if (mode === "signup") {
       payload.display_name = String(data.get("display_name") || "").trim() || payload.email.split("@")[0];
       payload.role = String(data.get("role") || "acheteur");
+      payload.seller_type = String(data.get("seller_type") || "particulier");
     }
 
     setBusy(true);
