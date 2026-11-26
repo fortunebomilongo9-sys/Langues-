@@ -43,7 +43,7 @@ async def health(request: Request) -> HealthResponse:
                 "id": item["id"],
                 "label": item["label"],
                 "kind": item["kind"],
-                "status": "prête" if item.get("available", True) else "indisponible",
+                "status": "ok" if item.get("enabled", True) else "desactive",
                 "detail": item.get("detail"),
                 "results": 0,
                 "took_ms": 0,
