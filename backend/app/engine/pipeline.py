@@ -92,7 +92,9 @@ class SearchEngine:
         if isinstance(cached, SearchResponse):
             return cached.model_copy(update={"cached": True})
 
-        raw_offers, stages, sources, network_failures = await self._collect(intent, request)
+        raw_offers, stages, sources, network_failures, blocked_sources = await self._collect(
+            intent, request
+        )
         offers = compose_offers(raw_offers, intent)
         offers.extend(await self._local_offers(intent, request))
         offers = rank_offers(offers, intent)
@@ -101,7 +103,7 @@ class SearchEngine:
         offers = offers[: min(request.limit, settings.max_results_hard)]
 
         network_ok = not (network_failures and not offers)
-        message = self._message(intent, offers, network_ok, sources)
+        message = self._message(intent, offers, network_ok, sources, blocked_sources)
         response = SearchResponse(
             query=request.query,
             intent=intent,
@@ -121,12 +123,13 @@ class SearchEngine:
 
     async def _collect(
         self, intent: SearchIntent, request: SearchRequest
-    ) -> tuple[list[RawOffer], list[StageReport], list[SourceStatus], list[str]]:
+    ) -> tuple[list[RawOffer], list[StageReport], list[SourceStatus], list[str], list[str]]:
         """Exécute les étapes de recherche jusqu'à obtenir assez d'offres fiables."""
         raw_offers: list[RawOffer] = []
         reports: list[StageReport] = []
         statuses: dict[str, SourceStatus] = {}
         network_failures: list[str] = []
+        blocked_sources: list[str] = []
         deadline = time.monotonic() + settings.http_total_budget
         seen_keys: set[str] = set()
 
@@ -165,7 +168,11 @@ class SearchEngine:
                 for run in runs:
                     self._merge_status(statuses, run)
                     if run.network_error:
-                        network_failures.append(run.detail or run.label)
+                        detail = run.detail or run.label
+                        if _is_connectivity_failure(detail):
+                            network_failures.append(detail)
+                        else:
+                            blocked_sources.append(detail)
                     stage_offers.extend(run.offers)
                 for offer in stage_offers:
                     marker = f"{offer.url}|{offer.title[:40].lower()}"
@@ -182,7 +189,7 @@ class SearchEngine:
                         note=None if stage_offers else "aucune offre exploitable à cette étape",
                     )
                 )
-        return raw_offers, reports, list(statuses.values()), network_failures
+        return raw_offers, reports, list(statuses.values()), network_failures, blocked_sources
 
     async def _run_sources(
         self, fetcher: PageFetcher, context: SourceContext, stage: str
@@ -261,12 +268,19 @@ class SearchEngine:
         offers: list[Offer],
         network_ok: bool,
         sources: list[SourceStatus],
+        blocked_sources: list[str] | None = None,
     ) -> str | None:
         if not network_ok:
             return "Connectez-vous à Internet pour effectuer vos recherches."
         if offers:
             return None
         if not any(source.status == "ok" for source in sources):
+            if blocked_sources:
+                return (
+                    "Les sources commerciales interrogées ont refusé l'accès automatisé "
+                    "(protection anti-robot ou blocage). Réessayez plus tard, ou publiez "
+                    "directement votre article sur JF MARKET."
+                )
             return (
                 "Les sources commerciales sont momentanément indisponibles. "
                 "Réessayez dans quelques instants."
