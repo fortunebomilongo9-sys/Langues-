@@ -39,7 +39,8 @@ def test_health_indique_le_mode_de_stockage(client):
     assert body["service"] == "JF MARKET"
     assert body["status"] == "ok"
     assert body["auth_provider"] in {"local", "firebase"}
-    assert body["storage"] in {"local", "firestore"}
+    assert body["storage_backend"] in {"local", "firestore"}
+    assert body["database_backend"] in {"local", "firestore"}
 
 
 def test_taxonomie_expose_les_communes_de_kinshasa(client):
@@ -58,8 +59,8 @@ def test_sources_declare_les_adaptateurs(client):
     response = client.get("/api/sources")
     assert response.status_code == 200
     body = response.json()
-    assert body["count"] >= 1
-    assert all("name" in source for source in body["sources"])
+    assert len(body["sources"]) >= 1
+    assert all("label" in source and "enabled" in source for source in body["sources"])
 
 
 def test_suggestions_reformulent_une_requete_partielle(client):
@@ -102,7 +103,7 @@ def test_favoris_cycle_complet(client, buyer):
     headers = _auth(buyer["token"])
     created = client.post("/api/favorites", json={"offer": _offer_payload()}, headers=headers)
     assert created.status_code == 200, created.text
-    favorite = created.json()["favorite"]
+    favorite = created.json()
     assert favorite["offer"]["title"] == "Samsung Galaxy A15 128Go"
 
     listed = client.get("/api/favorites", headers=headers)
@@ -152,7 +153,7 @@ def test_vendeur_publie_modifie_et_supprime(client, seller):
     }
     created = client.post("/api/listings", json=payload, headers=headers)
     assert created.status_code == 201, created.text
-    listing = created.json()["listing"]
+    listing = created.json()
     assert listing["seller_name"] == "Boutique Test"
     assert listing["commune"] == "Limete"
 
@@ -172,7 +173,7 @@ def test_vendeur_publie_modifie_et_supprime(client, seller):
         f"/api/listings/{listing['id']}", json={"price": 300}, headers=headers
     )
     assert updated.status_code == 200
-    assert updated.json()["listing"]["price"] == 300
+    assert updated.json()["price"] == 300
 
     deleted = client.delete(f"/api/listings/{listing['id']}", headers=headers)
     assert deleted.status_code == 200
@@ -185,7 +186,7 @@ def test_annonce_non_modifiable_par_un_autre_vendeur(client, seller):
         "/api/listings",
         json={"title": "Ordinateur portable HP", "price": 250},
         headers=headers,
-    ).json()["listing"]
+    ).json()
 
     import uuid
 

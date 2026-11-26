@@ -17,7 +17,7 @@ def _raw(title: str, url: str, **kwargs) -> RawOffer:
         "url": url,
         "source_id": "test",
         "source_name": "Source de test",
-        "snippet": kwargs.pop("snippet", ""),
+        "description": kwargs.pop("description", ""),
     }
     data.update(kwargs)
     return RawOffer(**data)
@@ -100,7 +100,7 @@ def test_composition_offre_ne_devine_ni_prix_ni_vendeur():
     raw = _raw(
         "Samsung Galaxy A15 128Go",
         "https://exemple.cd/galaxy-a15",
-        snippet="Disponible à Kinshasa, Gombe. Prix : 185 USD.",
+        description="Disponible à Kinshasa, Gombe. Prix : 185 USD.",
     )
     offer = compose_offer(raw, intent)
     assert offer.title.startswith("Samsung Galaxy A15")
@@ -148,11 +148,11 @@ def test_annonce_locale_devient_une_offre_recherchable():
 def test_pertinence_ecarte_offre_hors_sujet():
     intent = parse_query("téléphone Samsung")
     pertinent = compose_offer(
-        _raw("Samsung Galaxy S23 neuf", "https://exemple.cd/s23", snippet="Samsung Galaxy S23"),
+        _raw("Samsung Galaxy S23 neuf", "https://exemple.cd/s23", description="Samsung Galaxy S23"),
         intent,
     )
     hors_sujet = compose_offer(
-        _raw("Toyota Corolla 2015 essence", "https://exemple.cd/corolla", snippet="Voiture Toyota"),
+        _raw("Toyota Corolla 2015 essence", "https://exemple.cd/corolla", description="Voiture Toyota"),
         intent,
     )
     ranked = rank_offers([pertinent, hors_sujet], intent)
