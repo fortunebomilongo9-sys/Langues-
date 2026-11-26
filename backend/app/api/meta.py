@@ -37,7 +37,9 @@ async def health(request: Request) -> HealthResponse:
         version=settings.version,
         auth_provider="firebase" if settings.firebase_enabled else "local",
         storage_backend="firebase-storage" if settings.storage_enabled else "local",
-        database_backend=type(repository.backend).__name__,
+        database_backend=(
+            "firestore" if settings.firebase_enabled else "local"
+        ),
         sources=[
             {
                 "id": item["id"],

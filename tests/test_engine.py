@@ -109,7 +109,8 @@ def test_composition_offre_ne_devine_ni_prix_ni_vendeur():
     assert offer.commune == "Gombe"
     assert offer.seller_name is None
     assert offer.seller_type == "inconnu"
-    assert offer.contact.phone is None
+    # Aucun contact public : la fiche n'expose ni téléphone ni e-mail inventé.
+    assert offer.contact is None
 
 
 def test_composition_sans_prix_affiche_non_renseigne():
